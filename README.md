@@ -8,7 +8,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 * Bianca León - 202330527-8
 * Joaquín Torres - 202330550-2
 * Diego Villanueva - 202330558-8
-* **Tutor**: IGNACIO ANDRES MUÑOZ MARTINEZ
+* **Tutor**: Carlos Arévalo
 
 ## Wiki
 
