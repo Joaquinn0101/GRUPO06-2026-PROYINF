@@ -10,7 +10,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 * Diego Villanueva - 202330558-8
 * **Tutor**: Carlos Arévalo
 
-## 📄 Documentación y Entregas (2026-1)
+## Documentación y Entregas (2026-1)
 * **Informe Hito 1:** [Ver Autoevaluación SEMAT, Alphas y Requisitos aquí](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/wiki/Informe)
 
 ---
