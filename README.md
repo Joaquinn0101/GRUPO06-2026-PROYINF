@@ -1,5 +1,6 @@
 
 # Grupo 6
+Este repositorio contiene el proyecto base del semestre 2025-2 que el grupo continuará trabajando durante el semestre 2026-1.
 
 Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 
