@@ -21,10 +21,9 @@ En este hito, el equipo se enfocó en la implementación técnica de la funciona
 * **Tablero de Alcance:** [Acceder al Tablero Information Systems (DCC)](https://tablero-digital.dcc.uchile.cl/invite/board/221/d4456353300e1940)
 * **Funcionalidad Programada:** El código del **Simulador Dinámico (HU10)** se encuentra disponible para revisión en la rama de desarrollo **dev**.
 
-### Hito 1: Definición y Alphas
-* **Informe Hito 1:** [Ver Autoevaluación SEMAT, Alphas y Requisitos aquí](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/wiki/Informe)
-
 ---
+
+### Hito 1: Definición y Alphas
 * **Informe Hito 1:** [Ver Autoevaluación SEMAT, Alphas y Requisitos aquí](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/wiki/Informe)
 
 ---
