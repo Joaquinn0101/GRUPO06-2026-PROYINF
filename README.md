@@ -1,5 +1,6 @@
 
 # Grupo 6
+Este repositorio contiene el proyecto base del semestre 2025-2 que el grupo continuará trabajando durante el semestre 2026-1.
 
 Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 
@@ -7,15 +8,22 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 * Martín Layseca - 202330556-1
 * Bianca León - 202330527-8
 * Joaquín Torres - 202330550-2
-* **Tutor**: IGNACIO ANDRES MUÑOZ MARTINEZ
+* Diego Villanueva - 202330558-8
+* **Tutor**: Carlos Arévalo
 
-## Wiki
+## Documentación y Entregas (2026-1)
+* **Informe Hito 1:** [Ver Autoevaluación SEMAT, Alphas y Requisitos aquí](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/wiki/Informe)
 
-Puede acceder a la Wiki dando click en el siguiente enlace: [Disponible aquí](https://github.com/Joaquinn0101/GRUPOSEGFAULT-2025-PROYINF/wiki)
+---
 
-## Avances del Hito en el TAG:
+## Historial del Proyecto (2025-2)
 
-Avances disponibles en el tag correspondiente: [TAG 5](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/releases/tag/hito-5)
-## Videos
-* [Video Prototipo](https://youtu.be/JRR3ILT161Y)
-* [Video Resultado Final](https://www.youtube.com/watch?v=xremdMxI9Yk)
+### Wiki Original
+Puede acceder a la Wiki con la documentación del semestre pasado dando click en el siguiente enlace: [Disponible aquí](https://github.com/Joaquinn0101/GRUPOSEGFAULT-2025-PROYINF/wiki)
+
+### Avances del Hito en el TAG:
+Resultados finales de la versión base disponibles en el tag correspondiente: [TAG 5](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/releases/tag/hito-5)
+
+### Videos Demostrativos
+* [Video Prototipo Inicial](https://youtu.be/JRR3ILT161Y)
+* [Video Resultado Final (Base para este semestre)](https://www.youtube.com/watch?v=xremdMxI9Yk)
