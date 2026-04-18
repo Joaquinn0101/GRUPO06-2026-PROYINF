@@ -15,9 +15,11 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 
 ### Hito 2: Desarrollo de MVP y Requisitos Avanzados
 En este hito, el equipo se enfocó en la implementación técnica de la funcionalidad core y la actualización del modelo del sistema.
-* **📍 Wiki Hito 2:** [Ver Estimaciones, Registro de Trabajo y Justificaciones](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Estimaci%C3%B3n-y-Gesti%C3%B3n-del-Proyecto)
-* **📍 Tablero de Alcance:** [Acceder al Tablero Information Systems (DCC)](https://tablero-digital.dcc.uchile.cl/invite/board/221/d4456353300e1940)
-* **📍 Funcionalidad Programada:** El código del **Simulador Dinámico (HU10)** encuentra disponible para revisión en la rama de desarrollo **dev**.
+
+* **Historias de Usuario (HU07 - HU11):** Definición detallada y criterios de aceptación disponibles en los [Issues del Repositorio](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/issues).
+* **Wiki Hito 2:** [Ver Estimaciones, Registro de Trabajo y Justificaciones](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Estimaci%C3%B3n-y-Gesti%C3%B3n-del-Proyecto)
+* **Tablero de Alcance:** [Acceder al Tablero Information Systems (DCC)](https://tablero-digital.dcc.uchile.cl/invite/board/221/d4456353300e1940)
+* **Funcionalidad Programada:** El código del **Simulador Dinámico (HU10)** se encuentra disponible para revisión en la rama de desarrollo **dev**.
 
 ### Hito 1: Definición y Alphas
 * **Informe Hito 1:** [Ver Autoevaluación SEMAT, Alphas y Requisitos aquí](https://github.com/Joaquinn0101/GRUPO06-2025-PROYINF/wiki/Informe)
