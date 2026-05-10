@@ -18,6 +18,7 @@ A continuación, puedes navegar por las distintas secciones que detallan el dise
 * **Arquitectura del Sistema:** [Ver arquitectura del sistema](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Arquitectura-del-Sistema)
 * **Historias de Usuario y Trazabilidad:** [Ver funcionalidades, estados y trazabilidad](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/issues)
 * **Patrones de Diseño:** [Ver Patrones de Diseño](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Patrones-de-Dise%C3%B1o)
+* **Ubicación archivos de prueba (revisar Patrones de Diseño):** [Ver archivos](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/tree/dev/tester)
 
 
 ### Hito 2: Desarrollo de MVP y Requisitos Avanzados
