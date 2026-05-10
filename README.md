@@ -15,6 +15,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 
 ### Hito 3: Índice de Documentación
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
+* **Arquitectura del Sistema:** [Ver arquitectura del sistema]
 
 
 ### Hito 2: Desarrollo de MVP y Requisitos Avanzados
