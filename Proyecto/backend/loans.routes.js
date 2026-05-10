@@ -74,48 +74,53 @@ const ApplySchema = z.object({
 
 /* =============== DDL: asegurar tablas =============== */
 async function ensureTables() {
-    // 1. Tabla loan_requests (Préstamos)
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS loan_requests (
-                                                     id SERIAL PRIMARY KEY,
-                                                     rut TEXT NOT NULL,
-                                                     full_name TEXT NOT NULL,
-                                                     email TEXT NOT NULL,
-                                                     phone TEXT,
-                                                     amount INTEGER NOT NULL,
-                                                     term_months INTEGER NOT NULL,
-                                                     income INTEGER,
-                                                     status TEXT NOT NULL DEFAULT 'pendiente',
-                                                     scoring INTEGER,
-                                                     created_at TIMESTAMP NOT NULL DEFAULT NOW()
-            );
-    `);
-
-    // 2. Tabla USERS
+    // 1. Tabla USERS
     await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
-                                             user_id SERIAL PRIMARY KEY,
-                                             rut VARCHAR(12) UNIQUE NOT NULL,
+            user_id SERIAL PRIMARY KEY,
+            rut VARCHAR(12) UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             full_name TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'client',
             created_at TIMESTAMP NOT NULL DEFAULT NOW()
-            );
+        );
         CREATE INDEX IF NOT EXISTS idx_users_rut ON users(rut);
     `);
 
-    // Columna phone
+    // 🔹 ASEGURAR COLUMNA ROLE SI LA TABLA YA EXISTÍA
+    await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'client';`);
+
+    // 2. Tabla loan_requests (Préstamos)
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS loan_requests (
+            id SERIAL PRIMARY KEY,
+            rut TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT,
+            amount INTEGER NOT NULL,
+            term_months INTEGER NOT NULL,
+            income INTEGER,
+            status TEXT NOT NULL DEFAULT 'pendiente',
+            scoring INTEGER,
+            decided_by INTEGER REFERENCES users(user_id),
+            doc_salary_slip TEXT,
+            doc_address_proof TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    `);
+
+    // Columnas adicionales para loan_requests si no existen
     await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS phone TEXT;`);
     await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS seniority INTEGER DEFAULT 0;`);
     await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS existing_debt INTEGER DEFAULT 0;`);
+    await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS remaining_balance INTEGER;`);
+    await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS decided_by INTEGER REFERENCES users(user_id);`);
+    await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS doc_salary_slip TEXT;`);
+    await pool.query(`ALTER TABLE loan_requests ADD COLUMN IF NOT EXISTS doc_address_proof TEXT;`);
 
-    // 🔹 NUEVO: columna de saldo pendiente
-    await pool.query(`
-        ALTER TABLE loan_requests 
-        ADD COLUMN IF NOT EXISTS remaining_balance INTEGER;
-    `);
-
-    // 🔹 NUEVO: tabla de pagos
+    // 🔹 Tabla de pagos
     await pool.query(`
         CREATE TABLE IF NOT EXISTS payments (
             id SERIAL PRIMARY KEY,
@@ -145,32 +150,52 @@ async function ensureTables() {
     }
 }
 
+/* =============== MIDDLEWARE DE AUTORIZACIÓN =============== */
+function authorizeRole(role) {
+    return (req, res, next) => {
+        if (!req.user || req.user.role !== role) {
+            return res.status(403).json({ error: "Acceso denegado. Se requiere rol: " + role });
+        }
+        next();
+    };
+}
+
 /* =============== RUTAS DE AUTENTICACIÓN (HU 5) =============== */
 
 // POST /loans/register
 router.post("/register", async (req, res) => {
     try {
         await ensureTables();
+        const RegisterSchema = z.object({
+            rut: z.string().min(3).transform(normalizeRut).refine((v) => validarRut(v), { message: "RUT inválido" }),
+            full_name: z.string().min(3, "Nombre requerido"),
+            email: z.string().email("Email inválido"),
+            password: z.string().min(6, "La clave debe tener al menos 6 caracteres."),
+            role: z.enum(["client", "executive"]).optional().default("client"),
+        });
+
         const parsed = RegisterSchema.parse(req.body);
-        const { rut, email, password, full_name } = parsed;
+        const { rut, email, password, full_name, role } = parsed;
 
         const passwordHash = await hashPassword(password);
 
         const { rows } = await pool.query(
-            `INSERT INTO users (rut, email, password_hash, full_name)
-             VALUES ($1, $2, $3, $4)
-                 RETURNING user_id, rut, full_name, email`,
-            [rut, email, passwordHash, full_name]
+            `INSERT INTO users (rut, email, password_hash, full_name, role)
+             VALUES ($1, $2, $3, $4, $5)
+                 RETURNING user_id, rut, full_name, email, role`,
+            [rut, email, passwordHash, full_name, role]
         );
 
         const user = rows[0];
-        const token = generateToken(user.user_id, user.rut);
+        // IMPORTANTE: Incluir el rol en el token
+        const token = generateToken(user.user_id, user.rut, user.role);
 
         res.status(201).json({
             token,
             user_id: user.user_id,
             full_name: user.full_name,
             rut: user.rut,
+            role: user.role,
             message: "Registro exitoso.",
         });
     } catch (e) {
@@ -204,13 +229,15 @@ router.post("/login", async (req, res) => {
             return res.status(401).json({ error: "RUT o clave inválida." });
         }
 
-        const token = generateToken(user.user_id, user.rut);
+        // IMPORTANTE: Incluir el rol en el token
+        const token = jwt.sign({ user_id: user.user_id, rut: user.rut, role: user.role }, "TU_CLAVE_SUPER_SECRETA_Y_LARGA", { expiresIn: '24h' });
 
         res.json({
             token,
             user_id: user.user_id,
             full_name: user.full_name,
             rut: user.rut,
+            role: user.role
         });
     } catch (e) {
         if (e.issues) {
@@ -501,6 +528,67 @@ router.post("/simulate", async (req, res) => {
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: "simulate_failed" });
+    }
+});
+
+/* =============== RUTAS ADMINISTRATIVAS (EJECUTIVO) =============== */
+
+// GET /loans/admin/requests → Listar todas las solicitudes (Solo Ejecutivos)
+router.get("/admin/requests", authenticateToken, authorizeRole("executive"), async (req, res) => {
+    try {
+        const { rows } = await pool.query(
+            `SELECT id, rut, full_name, amount, status, scoring, created_at 
+             FROM loan_requests 
+             ORDER BY created_at DESC`
+        );
+        res.json(rows);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "No se pudieron obtener las solicitudes." });
+    }
+});
+
+// GET /loans/admin/requests/:id → Detalle de solicitud (Solo Ejecutivos)
+router.get("/admin/requests/:id", authenticateToken, authorizeRole("executive"), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rows } = await pool.query(
+            `SELECT * FROM loan_requests WHERE id = $1`,
+            [id]
+        );
+        if (!rows.length) return res.status(404).json({ error: "Solicitud no encontrada." });
+        res.json(rows[0]);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Error al obtener el detalle." });
+    }
+});
+
+// PATCH /loans/admin/requests/:id/evaluate → Aprobar o Rechazar (Solo Ejecutivos)
+router.patch("/admin/requests/:id/evaluate", authenticateToken, authorizeRole("executive"), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // 'aprobada' o 'rechazada'
+        const executiveId = req.user.user_id;
+
+        if (!["aprobada", "rechazada"].includes(status)) {
+            return res.status(400).json({ error: "Estado inválido. Debe ser 'aprobada' o 'rechazada'." });
+        }
+
+        const { rows } = await pool.query(
+            `UPDATE loan_requests 
+             SET status = $1, decided_by = $2 
+             WHERE id = $3 
+             RETURNING *`,
+            [status, executiveId, id]
+        );
+
+        if (!rows.length) return res.status(404).json({ error: "Solicitud no encontrada." });
+
+        res.json({ message: `Solicitud ${status} correctamente.`, loan: rows[0] });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Error al evaluar la solicitud." });
     }
 });
 

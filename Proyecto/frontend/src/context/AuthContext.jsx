@@ -36,8 +36,9 @@ export const AuthProvider = ({ children }) => {
         // Extraemos los datos del usuario (que ahora sí vienen completos)
         const userData = { 
             id: data.user_id, 
-            name: data.full_name, // <-- data.full_name ahora existe
-            rut: data.rut          // <-- data.rut ahora existe
+            name: data.full_name,
+            rut: data.rut,
+            role: data.role // <-- Agregamos el rol
         };
         setUser(userData);
 

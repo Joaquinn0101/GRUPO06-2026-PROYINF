@@ -9,23 +9,48 @@ const normalizeRut = (rut = "") => {
     return rut.replace(/[\.\-\s]/g, '').toUpperCase();
 }
 
+// Función para formatear RUT mientras se escribe (12.345.678-9)
+const formatRut = (value) => {
+    // Limpiar todo lo que no sea números o K
+    let clean = value.replace(/[^0-9kK]/g, '').toUpperCase();
+    if (!clean) return '';
+
+    // Separar dígito verificador
+    let dv = clean.slice(-1);
+    let cuerpo = clean.slice(0, -1);
+
+    // Formatear cuerpo con puntos
+    if (cuerpo.length > 0) {
+        cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return `${cuerpo}-${dv}`;
+    }
+    return dv;
+}
+
 const RegisterPage = () => {
     const [rut, setRut] = useState('');
     const [full_name, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('client'); // 🔹 Nuevo estado para el rol
+    const [showPassword, setShowPassword] = useState(false); // 🔹 Estado para mostrar password
     const [error, setError] = useState('');
-    
-    // 2. Añadimos estado para la visibilidad de la contraseña
-    const [showPassword, setShowPassword] = useState(false); 
 
     const navigate = useNavigate();
     const auth = useAuth();
 
+    const handleRutChange = (e) => {
+        const formatted = formatRut(e.target.value);
+        if (formatted.length <= 12) { // Limitar largo máximo estándar
+            setRut(formatted);
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        const cleanRut = normalizeRut(rut); 
+        // Para enviar al backend, lo enviamos limpio (sin puntos ni guion)
+        const cleanRut = rut.replace(/[\.\-]/g, '').toUpperCase(); 
 
         try {
             const response = await fetch('/api/loans/register', {
@@ -35,7 +60,8 @@ const RegisterPage = () => {
                     rut: cleanRut, 
                     full_name, 
                     email, 
-                    password 
+                    password,
+                    role // 🔹 Enviamos el rol
                 }),
             });
             
@@ -50,7 +76,13 @@ const RegisterPage = () => {
 
             // Si todo está OK (201), logueamos y redirigimos
             auth.login(data);
-            navigate('/dashboard');
+            
+            // 🔹 Redirección condicional según el rol
+            if (data.role === 'executive') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/dashboard');
+            }
 
         } catch (err) {
             // Este catch ahora recibe el "Unexpected end of JSON" O el error de la API
@@ -77,7 +109,7 @@ const RegisterPage = () => {
                         <input 
                             type="text" 
                             value={rut}
-                            onChange={(e) => setRut(e.target.value)}
+                            onChange={handleRutChange}
                             className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             required 
                             placeholder="Ej: 12.345.678-K"
@@ -132,6 +164,18 @@ const RegisterPage = () => {
                                 )}
                             </button>
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="text-sm font-medium text-zinc-600">Tipo de Cuenta</label>
+                        <select 
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="client">Cliente</option>
+                            <option value="executive">Ejecutivo del Banco</option>
+                        </select>
                     </div>
 
                     {error && <p className="text-red-600 text-sm">{error}</p>}

@@ -9,12 +9,14 @@ import RegisterPage from './pages/RegisterPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import LoanRequestView from "./LoanRequestView";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ExecutiveDashboardPage from './pages/ExecutiveDashboardPage.jsx';
+import LoanReviewPage from './pages/LoanReviewPage.jsx';
 
 // 🔹 Nuevo: portal de pagos
 import PaymentPortalPage from './pages/PaymentPortalPage.jsx';
 
 const Navbar = () => {
-    const { token, logout } = useAuth();
+    const { token, user, logout } = useAuth();
 
     return (
         <nav className="bg-white border-b border-zinc-200 sticky top-0 z-40 backdrop-blur bg-white/80">
@@ -31,12 +33,21 @@ const Navbar = () => {
 
                     {token ? (
                         <>
-                            <Link
-                                to="/dashboard"
-                                className="text-sm text-zinc-600 hover:text-zinc-900"
-                            >
-                                Mi Dashboard
-                            </Link>
+                            {user?.role === 'executive' ? (
+                                <Link
+                                    to="/admin/dashboard"
+                                    className="text-sm text-indigo-600 font-bold hover:text-indigo-900"
+                                >
+                                    Panel Ejecutivo
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/dashboard"
+                                    className="text-sm text-zinc-600 hover:text-zinc-900"
+                                >
+                                    Mi Dashboard
+                                </Link>
+                            )}
                             <button
                                 onClick={logout}
                                 className="rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-800 hover:shadow-sm"
@@ -74,11 +85,11 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/loan" element={<LoanRequestView />} />
 
-                {/* Rutas Protegidas */}
+                {/* Rutas Protegidas Cliente */}
                 <Route
                     path="/dashboard"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requiredRole="client">
                             <DashboardPage />
                         </ProtectedRoute>
                     }
@@ -88,8 +99,26 @@ function App() {
                 <Route
                     path="/portal-pagos/:loanId"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requiredRole="client">
                             <PaymentPortalPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Rutas Protegidas Ejecutivo */}
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <ProtectedRoute requiredRole="executive">
+                            <ExecutiveDashboardPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/review/:id"
+                    element={
+                        <ProtectedRoute requiredRole="executive">
+                            <LoanReviewPage />
                         </ProtectedRoute>
                     }
                 />

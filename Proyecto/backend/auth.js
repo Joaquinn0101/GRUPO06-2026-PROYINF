@@ -13,9 +13,9 @@ async function comparePassword(password, hash) {
     return bcrypt.compare(password, hash);
 }
 
-function generateToken(userId, rut) {
-    // Genera el token con el ID y RUT, válido por 24 horas
-    return jwt.sign({ user_id: userId, rut: rut }, JWT_SECRET, { expiresIn: '24h' });
+function generateToken(userId, rut, role) {
+    // Genera el token con el ID, RUT y ROL, válido por 24 horas
+    return jwt.sign({ user_id: userId, rut: rut, role: role }, JWT_SECRET, { expiresIn: '24h' });
 }
 
 // Middleware para proteger rutas 
