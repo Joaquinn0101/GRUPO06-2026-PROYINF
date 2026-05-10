@@ -17,7 +17,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
 * **Arquitectura del Sistema:** [Ver arquitectura del sistema](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Arquitectura-del-Sistema)
 * **Historias de Usuario y Trazabilidad:** [Ver funcionalidades, estados y trazabilidad](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/issues)
-* **Patrones de Diseño:** [Ver Patros de Diseño](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Patrones-de-Dise%C3%B1o)
+* **Patrones de Diseño:** [Ver Patrones de Diseño](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Patrones-de-Dise%C3%B1o)
 
 
 ### Hito 2: Desarrollo de MVP y Requisitos Avanzados
