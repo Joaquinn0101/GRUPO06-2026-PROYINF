@@ -17,7 +17,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
 
 1. **[Arquitectura del Sistema](wiki/Arquitectura)**: Diagramas estructurales y diseño de la solución.
-2. **[Historias de Usuario y Trazabilidad](wiki/Historias-de-Usuario)**: Detalle del backlog, estados de las solicitudes y funcionalidades implementadas.
+2. **[Historias de Usuario y Trazabilidad]([wiki/Historias-de-Usuario](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/issues))**: Detalle del backlog, estados de las solicitudes y funcionalidades implementadas.
 3. **[Patrones de Diseño](wiki/Patrones-de-Diseno)**: Justificación técnica de los patrones aplicados en el código.
 4. **[Prototipo Funcional](wiki/Prototipo)**: Capturas y evidencias de la interfaz web operando.
 5. **[Guía de Despliegue](wiki/Despliegue)**: Instrucciones para clonar, instalar dependencias y ejecutar el proyecto en local.
