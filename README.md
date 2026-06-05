@@ -13,6 +13,10 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
   
 ## Documentación y Entregas (2026-1)
 
+### Hito 4: Evaluación de Arquitectura y Revisión de HUs
+A continuación, se presenta la lista de los concerns detallados y declarados como los más impactantes en términos de calidad según el cliente.
+* **Concerns:** [Ver Concerns]()
+
 ### Hito 3: Índice de Documentación
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
 * **Arquitectura del Sistema:** [Ver arquitectura del sistema](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Arquitectura-del-Sistema)
