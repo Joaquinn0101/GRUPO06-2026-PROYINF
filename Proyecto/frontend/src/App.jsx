@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { Moon, Sun } from 'lucide-react';
 
 // Importamos todas nuestras páginas
 import Landing from './pages/Landing.jsx';
@@ -17,17 +18,33 @@ import PaymentPortalPage from './pages/PaymentPortalPage.jsx';
 
 const Navbar = () => {
     const { token, user, logout } = useAuth();
+    const [darkMode, setDarkMode] = useState(() => {
+        const saved = localStorage.getItem('theme');
+        if (saved) return saved === 'dark';
+        // Por defecto: Oscuro
+        return true;
+    });
+
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [darkMode]);
 
     return (
-        <nav className="bg-white border-b border-zinc-200 sticky top-0 z-40 backdrop-blur bg-white/80">
+        <nav className="bg-white/80 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50 backdrop-blur">
             <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
                 <Link to="/" className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-blue-500 to-emerald-400" />
-                    <span className="text-sm font-semibold tracking-tight">Banco INF</span>
+                    <img src="/iconobanco.png" alt="Banco INF Logo" className="h-8 w-8 object-contain" />
+                    <span className="text-sm font-semibold tracking-tight dark:text-white transition-colors">Banco INF</span>
                 </Link>
 
                 <div className="flex items-center gap-4">
-                    <Link to="/loan" className="text-sm text-zinc-600 hover:text-zinc-900">
+                    <Link to="/loan" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                         Simulador
                     </Link>
 
@@ -36,38 +53,46 @@ const Navbar = () => {
                             {user?.role === 'executive' ? (
                                 <Link
                                     to="/admin/dashboard"
-                                    className="text-sm text-indigo-600 font-bold hover:text-indigo-900"
+                                    className="text-sm text-indigo-600 dark:text-indigo-400 font-bold hover:text-indigo-900 dark:hover:text-indigo-300 transition-colors"
                                 >
                                     Panel Ejecutivo
                                 </Link>
                             ) : (
                                 <Link
                                     to="/dashboard"
-                                    className="text-sm text-zinc-600 hover:text-zinc-900"
+                                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
                                 >
                                     Mi Dashboard
                                 </Link>
                             )}
                             <button
                                 onClick={logout}
-                                className="rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-800 hover:shadow-sm"
+                                className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-800 dark:text-zinc-200 hover:shadow-sm transition-all"
                             >
                                 Cerrar Sesión
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="text-sm text-zinc-600 hover:text-zinc-900">
+                            <Link to="/login" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                                 Login
                             </Link>
                             <Link
                                 to="/register"
-                                className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow"
+                                className="rounded-xl bg-zinc-900 dark:bg-zinc-100 px-4 py-2 text-sm font-semibold text-white dark:text-zinc-900 shadow-sm hover:shadow transition-all"
                             >
                                 Registro
                             </Link>
                         </>
                     )}
+
+                    <button
+                        onClick={() => setDarkMode(!darkMode)}
+                        className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                        aria-label="Toggle dark mode"
+                    >
+                        {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                    </button>
                 </div>
             </div>
         </nav>
@@ -76,7 +101,7 @@ const Navbar = () => {
 
 function App() {
     return (
-        <div className="App">
+        <div className="min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-300">
             <Navbar />
             <Routes>
                 {/* Rutas Públicas */}
@@ -123,7 +148,7 @@ function App() {
                     }
                 />
 
-                <Route path="*" element={<h2>404 - Página no encontrada</h2>} />
+                <Route path="*" element={<h2 className="p-10 text-center dark:text-white">404 - Página no encontrada</h2>} />
             </Routes>
         </div>
     );

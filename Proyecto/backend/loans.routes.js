@@ -6,6 +6,7 @@ const pool = require("./db");
 // Lógica de negocio
 const { calcularScoring, calcularProbabilidad, obtenerRecomendacion } = require("./scoring");
 const { validarRut, validarTelefonoChileno } = require("./validaciones");
+const logger = require("./logger");
 // IMPORTAR LÓGICA DE SEGURIDAD (auth.js)
 const { hashPassword, comparePassword, generateToken, authenticateToken } = require("./auth");
 
@@ -109,6 +110,17 @@ async function ensureTables() {
             doc_address_proof TEXT,
             created_at TIMESTAMP NOT NULL DEFAULT NOW()
         );
+    `);
+
+    // 3. Tabla loan_drafts (HU #1: Guardado temporal)
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS loan_drafts (
+            id SERIAL PRIMARY KEY,
+            rut TEXT NOT NULL,
+            draft_data JSONB NOT NULL,
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_loan_drafts_rut ON loan_drafts(rut);
     `);
 
     // Columnas adicionales para loan_requests si no existen
@@ -255,7 +267,7 @@ router.post("/login", async (req, res) => {
 router.get("/health", (_req, res) => res.json({ ok: true, scope: "loans" }));
 
 // POST /loans/apply → inserta, calcula scoring y devuelve {id,status,scoring}
-router.post("/apply", async (req, res) => {
+router.post("/apply", authenticateToken, async (req, res) => {
     try {
         await ensureTables();
 
@@ -272,6 +284,12 @@ router.post("/apply", async (req, res) => {
         });
 
         const { rut, full_name, email, phone, amount, term_months, income, seniority, existing_debt } = parsed;
+
+        // HU #8: Validación estricta - El usuario solo puede solicitar para sí mismo
+        if (req.user.role === 'client' && normalizeRut(req.user.rut) !== normalizeRut(rut)) {
+            logger.warn("Intento de solicitud para otro RUT", { user: req.user.rut, target: rut });
+            return res.status(403).json({ error: "No tienes permiso para realizar una solicitud para este RUT." });
+        }
 
         // Insertar como pendiente (incluyendo remaining_balance)
         const insertQ = `
@@ -306,6 +324,11 @@ router.post("/apply", async (req, res) => {
         `;
         const { rows: updatedRows } = await pool.query(updateQ, [reqRow.id, finalStatus, score]);
 
+        logger.info("Solicitud procesada con éxito", { id: updatedRows[0].id, status: finalStatus, score });
+
+        // HU #1: Limpiar draft si existe
+        await pool.query(`DELETE FROM loan_drafts WHERE rut = $1`, [normalizeRut(rut)]);
+
         return res.status(201).json({
             id: updatedRows[0].id,
             status: updatedRows[0].status,
@@ -315,8 +338,51 @@ router.post("/apply", async (req, res) => {
         if (err?.issues) {
             return res.status(400).json({ error: "validation_error", issues: err.issues });
         }
-        console.error(err);
+        logger.error("Error en POST /apply", { error: err.message });
         return res.status(500).json({ error: "apply_failed" });
+    }
+});
+
+/* =============== RUTAS DE DRAFTS (HU #1) =============== */
+
+// POST /loans/draft → Guardado temporal del estado de la solicitud
+router.post("/draft", authenticateToken, async (req, res) => {
+    try {
+        await ensureTables();
+        const { rut } = req.user;
+        const draftData = req.body;
+
+        const { rows } = await pool.query(
+            `INSERT INTO loan_drafts (rut, draft_data, updated_at)
+             VALUES ($1, $2, NOW())
+             ON CONFLICT (rut) DO UPDATE SET draft_data = $2, updated_at = NOW()
+             RETURNING *`,
+            [normalizeRut(rut), draftData]
+        );
+
+        logger.info("Draft guardado", { rut });
+        res.json({ message: "Progreso guardado temporalmente.", draft: rows[0] });
+    } catch (e) {
+        logger.error("Error al guardar draft", { error: e.message });
+        res.status(500).json({ error: "draft_save_failed" });
+    }
+});
+
+// GET /loans/draft → Recuperar estado temporal
+router.get("/draft", authenticateToken, async (req, res) => {
+    try {
+        await ensureTables();
+        const { rut } = req.user;
+        const { rows } = await pool.query(
+            `SELECT * FROM loan_drafts WHERE rut = $1`,
+            [normalizeRut(rut)]
+        );
+
+        if (!rows.length) return res.status(404).json({ error: "No hay drafts guardados." });
+        res.json(rows[0]);
+    } catch (e) {
+        logger.error("Error al recuperar draft", { error: e.message });
+        res.status(500).json({ error: "draft_fetch_failed" });
     }
 });
 
@@ -376,7 +442,6 @@ router.get("/dashboard", authenticateToken, async (req, res) => {
 });
 
 // 🔹 GET /loans/:id → detalle de un préstamo (para el portal de pagos)
-// 🔹 GET /loans/:id → detalle de un préstamo (para el portal de pagos)
 router.get("/:id", authenticateToken, async (req, res) => {
     try {
         await ensureTables();
@@ -387,7 +452,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
             return res.status(400).json({ error: "id_invalido" });
         }
 
-        // 🔥 Arreglo: buscamos solo por id (simplificado para el ramo)
+        // 🔥 HU #8: Validación de propiedad
         const { rows } = await pool.query(
             `SELECT id, rut, full_name, amount, term_months, status, scoring, created_at, remaining_balance
              FROM loan_requests
@@ -399,9 +464,16 @@ router.get("/:id", authenticateToken, async (req, res) => {
             return res.status(404).json({ error: "not_found" });
         }
 
-        return res.json(rows[0]);
+        const loan = rows[0];
+        // Si es cliente, solo puede ver el suyo. Si es ejecutivo, puede ver cualquiera.
+        if (req.user.role === 'client' && normalizeRut(req.user.rut) !== normalizeRut(loan.rut)) {
+            logger.warn("Acceso denegado a préstamo ajeno", { user: req.user.rut, loanId });
+            return res.status(403).json({ error: "No tienes permiso para ver este préstamo." });
+        }
+
+        return res.json(loan);
     } catch (e) {
-        console.error("Error en GET /loans/:id", e);
+        logger.error("Error en GET /loans/:id", { error: e.message });
         return res.status(500).json({ error: "internal_error" });
     }
 });
@@ -424,7 +496,6 @@ router.post("/:id/payments", authenticateToken, async (req, res) => {
             return res.status(400).json({ message: "Monto inválido." });
         }
 
-        // 🔥 Arreglo: buscamos solo por id
         const { rows: loanRows } = await pool.query(
             `SELECT id, rut, amount, term_months, status, remaining_balance
              FROM loan_requests
@@ -435,6 +506,12 @@ router.post("/:id/payments", authenticateToken, async (req, res) => {
         const loan = loanRows[0];
         if (!loan) {
             return res.status(404).json({ message: "Crédito no encontrado." });
+        }
+
+        // 🔥 HU #8: Validación de propiedad para pagos
+        if (req.user.role === 'client' && normalizeRut(req.user.rut) !== normalizeRut(loan.rut)) {
+            logger.warn("Intento de pago en préstamo ajeno", { user: req.user.rut, loanId });
+            return res.status(403).json({ message: "No puedes pagar un préstamo que no te pertenece." });
         }
 
         if (loan.remaining_balance <= 0) {
@@ -458,13 +535,15 @@ router.post("/:id/payments", authenticateToken, async (req, res) => {
             [newBalance, loan.id]
         );
 
+        logger.info("Pago registrado", { loanId, amount: pago });
+
         return res.status(201).json({
             message: "Pago registrado correctamente (simulado).",
             loan: updatedLoanRows[0],
             payment: paymentRows[0],
         });
     } catch (e) {
-        console.error("Error en POST /loans/:id/payments", e);
+        logger.error("Error en POST /loans/:id/payments", { error: e.message });
         return res.status(500).json({ message: "Error procesando pago." });
     }
 });

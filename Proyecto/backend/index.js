@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
+const logger = require("./logger");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,9 +16,9 @@ app.use(cors({
     ],
 }));
 
-// Logger simple
+// Logger mejorado
 app.use((req, _res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    logger.info(`${req.method} ${req.path}`, { ip: req.ip, userAgent: req.get('user-agent') });
     next();
 });
 

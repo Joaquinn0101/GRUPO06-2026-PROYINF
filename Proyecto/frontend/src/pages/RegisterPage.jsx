@@ -98,64 +98,58 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-zinc-200">
-                <h2 className="text-3xl font-semibold text-center text-zinc-900 mb-6">Crear Cuenta</h2>
+        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center p-4 transition-colors">
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-lg border border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-3xl font-semibold text-center text-zinc-900 dark:text-white mb-6">Crear Cuenta</h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* ... (Campos de RUT, Nombre, Email) ... */}
                     <div>
-                        <label className="text-sm font-medium text-zinc-600">RUT</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">RUT</label>
                         <input 
                             type="text" 
                             value={rut}
                             onChange={handleRutChange}
-                            className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 transition-all"
                             required 
                             placeholder="Ej: 12.345.678-K"
                         />
                     </div>
                     <div>
-                        <label className="text-sm font-medium text-zinc-600">Nombre Completo</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Nombre Completo</label>
                         <input 
                             type="text" 
                             value={full_name}
                             onChange={(e) => setFullName(e.target.value)}
-                            className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white transition-all"
                             required 
                         />
                     </div>
                     <div>
-                        <label className="text-sm font-medium text-zinc-600">Email</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Email</label>
                         <input 
                             type="email" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white transition-all"
                             required 
                         />
                     </div>
 
-                    {/* --- 3. CAMPO DE CONTRASEÑA MODIFICADO --- */}
                     <div>
-                        <label className="text-sm font-medium text-zinc-600">Contraseña</label>
-                        {/* Envolvemos el input y el botón para posicionamiento */}
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Contraseña</label>
                         <div className="relative mt-1">
                             <input 
-                                // El tipo cambia dinámicamente
                                 type={showPassword ? 'text' : 'password'} 
                                 value={password}
-                                // ¡AQUÍ ESTÁ EL ARREGLO! (target en vez of targe)
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10" // pr-10 para dar espacio al ícono
+                                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white pr-10 transition-all"
                                 minLength={6}
                                 required 
                             />
-                            {/* Este es el botón para ver/ocultar */}
                             <button
-                                type="button" // Previene que envíe el formulario
-                                onClick={() => setShowPassword(!showPassword)} // Cambia el estado
-                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 hover:text-zinc-800"
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white transition-colors"
                             >
                                 {showPassword ? (
                                     <EyeOff className="h-5 w-5" />
@@ -167,30 +161,30 @@ const RegisterPage = () => {
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium text-zinc-600">Tipo de Cuenta</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Tipo de Cuenta</label>
                         <select 
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white transition-all"
                         >
                             <option value="client">Cliente</option>
                             <option value="executive">Ejecutivo del Banco</option>
                         </select>
                     </div>
 
-                    {error && <p className="text-red-600 text-sm">{error}</p>}
+                    {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
 
                     <button 
                         type="submit"
-                        className="w-full py-2 px-4 bg-zinc-900 text-white font-semibold rounded-lg hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2"
+                        className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white focus:ring-offset-2 transition-all shadow-md"
                     >
                         Crear cuenta
                     </button>
                 </form>
 
-                <p className="text-sm text-center text-zinc-600 mt-6">
+                <p className="text-sm text-center text-zinc-600 dark:text-zinc-400 mt-6">
                     ¿Ya tienes cuenta?{' '}
-                    <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+                    <Link to="/login" className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                         Inicia sesión
                     </Link>
                 </p>
