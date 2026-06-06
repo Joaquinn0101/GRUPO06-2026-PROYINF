@@ -18,6 +18,10 @@ A continuación, se presenta la lista de los concerns detallados y declarados co
 * **Concerns:** [Ver Concerns](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Concerns)
 * **Iteración de HUs:** [Ver desglose](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Iteracion-HU)
 
+* Tiempo empleado:
+  * Redacción de evaluación de arquitectura ATAM y análisis de trade-offs. Tiempo empleado: 4 horas.
+  * Implementación de los cambios realizados. Tiempo empleado: X horas.
+
 ### Hito 3: Índice de Documentación
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
 * **Arquitectura del Sistema:** [Ver arquitectura del sistema](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Arquitectura-del-Sistema)
