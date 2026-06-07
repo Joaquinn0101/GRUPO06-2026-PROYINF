@@ -20,7 +20,7 @@ A continuación, se presenta la lista de los concerns detallados y declarados co
 
 * Tiempo empleado:
   * Redacción de evaluación de arquitectura ATAM y análisis de trade-offs. Tiempo empleado: 4 horas.
-  * Implementación de los cambios realizados. Tiempo empleado: X horas.
+  * Implementación de los cambios realizados. Tiempo empleado: 24.5 horas. [En detalle]()
 
 ### Hito 3: Índice de Documentación
 A continuación, puedes navegar por las distintas secciones que detallan el diseño y la implementación de nuestro software:
