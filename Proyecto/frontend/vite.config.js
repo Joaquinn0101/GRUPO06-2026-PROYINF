@@ -8,6 +8,7 @@ export default defineConfig({
     // Esto es para que Vite escuche en todas las interfaces DENTRO del contenedor
     host: '0.0.0.0', 
     port: 5173,
+    allowedHosts: ['ingsoftware.kaichitos.me'],
     proxy: {
       '/api': {
         // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
