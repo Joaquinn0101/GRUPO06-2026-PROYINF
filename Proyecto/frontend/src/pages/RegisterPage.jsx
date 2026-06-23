@@ -41,7 +41,7 @@ const RegisterPage = () => {
 
     const handleRutChange = (e) => {
         const formatted = formatRut(e.target.value);
-        if (formatted.length <= 12) { // Limitar largo máximo estándar
+        if (formatted.length <= 13) { // Limitar largo máximo estándar
             setRut(formatted);
         }
     }
@@ -105,7 +105,7 @@ const RegisterPage = () => {
                             onChange={handleRutChange}
                             className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 transition-all"
                             required 
-                            placeholder="Ej: 12.345.678-K"
+                            placeholder="Ej: 12.345.678-K o 1.234.567-K"
                         />
                     </div>
                     <div>

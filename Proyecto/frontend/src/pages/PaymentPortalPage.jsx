@@ -149,7 +149,8 @@ const PaymentPortalPage = () => {
                     </p>
                 </div>
 
-                {/* Formulario de pago */}
+                {/* Formulario de pago o Mensaje de pagado */}
+                {loan.remaining_balance > 0 ? (
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
                         <label className="block text-sm font-medium text-zinc-700 mb-1">
@@ -158,6 +159,7 @@ const PaymentPortalPage = () => {
                         <input
                             type="number"
                             min={1}
+                            max={loan.remaining_balance || 0}
                             step="1000"
                             required
                             className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -194,12 +196,18 @@ const PaymentPortalPage = () => {
 
                     <button
                         type="submit"
-                        disabled={submitting}
+                        disabled={submitting || loan.remaining_balance <= 0}
                         className="w-full py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {submitting ? 'Procesando...' : 'Confirmar pago (simulado)'}
                     </button>
                 </form>
+                ) : (
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
+                        <p className="text-emerald-800 font-medium">Este crédito ya ha sido pagado en su totalidad.</p>
+                        <p className="text-emerald-600 text-sm mt-1">Gracias por usar nuestro portal de pagos.</p>
+                    </div>
+                )}
             </div>
         </div>
     );

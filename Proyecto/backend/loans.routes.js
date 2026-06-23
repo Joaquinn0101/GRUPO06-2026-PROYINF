@@ -519,6 +519,10 @@ router.post("/:id/payments", authenticateToken, async (req, res) => {
             return res.status(400).json({ message: "El crédito ya está pagado." });
         }
 
+        if (pago > loan.remaining_balance) {
+            return res.status(400).json({ message: "El monto no puede superar el saldo pendiente." });
+        }
+
         const { rows: paymentRows } = await pool.query(
             `INSERT INTO payments (loan_id, amount, method)
              VALUES ($1, $2, $3)
@@ -527,13 +531,17 @@ router.post("/:id/payments", authenticateToken, async (req, res) => {
         );
 
         const newBalance = Math.max(loan.remaining_balance - pago, 0);
+        let newStatus = loan.status;
+        if (newBalance === 0) {
+            newStatus = 'pagado';
+        }
 
         const { rows: updatedLoanRows } = await pool.query(
             `UPDATE loan_requests
-             SET remaining_balance = $1
-             WHERE id = $2
+             SET remaining_balance = $1, status = $2
+             WHERE id = $3
                  RETURNING id, rut, full_name, amount, term_months, status, scoring, created_at, remaining_balance`,
-            [newBalance, loan.id]
+            [newBalance, newStatus, loan.id]
         );
 
         logger.info("Pago registrado", { loanId, amount: pago });

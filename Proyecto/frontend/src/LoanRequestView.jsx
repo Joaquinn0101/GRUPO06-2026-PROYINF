@@ -331,12 +331,12 @@ export default function LoanRequestView() {
                                             <input
                                                 className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 transition-all dark:text-white"
                                                 value={data.rut}
-                                                inputMode="text"
-                                                placeholder="12.345.678-5"
+                                                placeholder="Ej: 12.345.678-5 o 1.234.567-5"
                                                 onChange={(e) => setData({ ...data, rut: formatRut(e.target.value) })}
+                                                maxLength={14}
                                             />
                                             {!validateRut(data.rut) && data.rut && (
-                                                <p className="mt-1 text-xs text-amber-600 dark:text-amber-400 font-medium">RUT inválido (formato: 12.345.678-5).</p>
+                                                <p className="mt-1 text-xs text-amber-600 dark:text-amber-400 font-medium">RUT inválido. Verifique que el RUT y dígito verificador sean correctos.</p>
                                             )}
                                         </Field>
                                         <Field label="Nombre completo" required>

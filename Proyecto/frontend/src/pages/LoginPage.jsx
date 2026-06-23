@@ -28,7 +28,7 @@ const LoginPage = () => {
 
     const handleRutChange = (e) => {
         const formatted = formatRut(e.target.value);
-        if (formatted.length <= 12) {
+        if (formatted.length <= 13) {
             setRut(formatted);
         }
     }
@@ -88,7 +88,7 @@ const LoginPage = () => {
                             value={rut} 
                             onChange={handleRutChange} 
                             className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 transition-all"
-                            placeholder="Ej: 12.345.678-5"
+                            placeholder="Ej: 12.345.678-K o 1.234.567-K"
                             required 
                         />
                     </div>
