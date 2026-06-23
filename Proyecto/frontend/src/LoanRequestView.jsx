@@ -12,7 +12,8 @@ import {
     CalendarClock,
     UserPlus,
     LayoutDashboard,
-    Sparkles
+    Sparkles,
+    ShieldCheck
 } from "lucide-react";
 
 // ——— Utilidades ———

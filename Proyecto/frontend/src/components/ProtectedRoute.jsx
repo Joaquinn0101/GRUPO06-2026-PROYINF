@@ -3,21 +3,29 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-    // 1. Obtenemos el token y el usuario desde nuestro "cerebro"
-    const { token, user } = useAuth();
+    // 1. Obtenemos el token, usuario y estado de carga desde el contexto
+    const { token, user, isLoading } = useAuth();
+
+    // 2. Si aún estamos cargando la sesión, mostramos un spinner
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+                <p className="text-zinc-500 dark:text-zinc-400 animate-pulse">Verificando sesión...</p>
+            </div>
+        );
+    }
 
     if (!token) {
-        // 2. Si NO hay token, redirigimos al login
+        // 3. Si NO hay token, redirigimos al login
         return <Navigate to="/login" replace />;
     }
 
     if (requiredRole && user?.role !== requiredRole) {
-        // 3. Si el rol no coincide, redirigimos a home con mensaje (simulado aquí por redirección)
-        alert("Acceso Denegado: No tienes permisos para acceder a esta página.");
+        // 4. Si el rol no coincide, redirigimos a home
         return <Navigate to="/" replace />;
     }
 
-    // 4. Si TODO está OK, mostramos el componente hijo
+    // 5. Si TODO está OK, mostramos el componente hijo
     return children;
 };
 

@@ -9,9 +9,7 @@ const path = require('path');
 class Logger {
     constructor() {
         this.logDir = path.join(__dirname, 'logs');
-        if (!fs.existsSync(this.logDir)) {
-            fs.mkdirSync(this.logDir);
-        }
+        fs.mkdirSync(this.logDir, { recursive: true });
     }
 
     _formatMessage(level, message, context = {}) {
@@ -32,7 +30,11 @@ class Logger {
 
         // Persistir en archivo para auditoría y recuperación
         const fileName = `log-${new Date().toISOString().split('T')[0]}.log`;
-        fs.appendFileSync(path.join(this.logDir, fileName), logMessage);
+        try {
+            fs.appendFileSync(path.join(this.logDir, fileName), logMessage);
+        } catch (e) {
+            console.error('Error al escribir log en archivo:', e.message);
+        }
     }
 
     info(message, context) {

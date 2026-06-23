@@ -8,11 +8,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middlewares base
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(cors({
     origin: [
         "http://localhost:5173", // Vite dev
         "http://localhost:4173", // Vite preview
+        "https://ingsoftware.kaichitos.me", // Producción
+        "http://ingsoftware.kaichitos.me",  // Producción HTTP
     ],
 }));
 

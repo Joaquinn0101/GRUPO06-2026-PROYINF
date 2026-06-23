@@ -120,7 +120,7 @@ async function ensureTables() {
             draft_data JSONB NOT NULL,
             updated_at TIMESTAMP NOT NULL DEFAULT NOW()
         );
-        CREATE INDEX IF NOT EXISTS idx_loan_drafts_rut ON loan_drafts(rut);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_loan_drafts_rut ON loan_drafts(rut);
     `);
 
     // Columnas adicionales para loan_requests si no existen
@@ -183,11 +183,12 @@ router.post("/register", async (req, res) => {
             full_name: z.string().min(3, "Nombre requerido"),
             email: z.string().email("Email inválido"),
             password: z.string().min(6, "La clave debe tener al menos 6 caracteres."),
-            role: z.enum(["client", "executive"]).optional().default("client"),
+
         });
 
         const parsed = RegisterSchema.parse(req.body);
-        const { rut, email, password, full_name, role } = parsed;
+        const { rut, email, password, full_name } = parsed;
+        const role = 'client';
 
         const passwordHash = await hashPassword(password);
 
@@ -242,7 +243,7 @@ router.post("/login", async (req, res) => {
         }
 
         // IMPORTANTE: Incluir el rol en el token
-        const token = jwt.sign({ user_id: user.user_id, rut: user.rut, role: user.role }, "TU_CLAVE_SUPER_SECRETA_Y_LARGA", { expiresIn: '24h' });
+        const token = generateToken(user.user_id, user.rut, user.role);
 
         res.json({
             token,
@@ -387,7 +388,7 @@ router.get("/draft", authenticateToken, async (req, res) => {
 });
 
 // GET /loans/:id/status → consulta rápida para polling si lo usas
-router.get("/:id/status", async (req, res) => {
+router.get("/:id/status", authenticateToken, async (req, res) => {
     try {
         const { rows } = await pool.query(
             `SELECT id, status, scoring FROM loan_requests WHERE id = $1`,
@@ -657,7 +658,7 @@ router.patch("/admin/requests/:id/evaluate", authenticateToken, authorizeRole("e
         const { rows } = await pool.query(
             `UPDATE loan_requests 
              SET status = $1, decided_by = $2 
-             WHERE id = $3 
+             WHERE id = $3 AND status = 'pendiente'
              RETURNING *`,
             [status, executiveId, id]
         );

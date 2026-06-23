@@ -13,6 +13,7 @@ const PaymentPortalPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchLoan = async () => {
@@ -48,6 +49,7 @@ const PaymentPortalPage = () => {
         e.preventDefault();
         setError("");
         setMessage("");
+        setSubmitting(true);
 
         try {
             const res = await fetch(`/api/loans/${loanId}/payments`, {
@@ -73,6 +75,8 @@ const PaymentPortalPage = () => {
             setAmount("");
         } catch (err) {
             setError(err.message || "Error al procesar el pago.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -153,7 +157,7 @@ const PaymentPortalPage = () => {
                         </label>
                         <input
                             type="number"
-                            min={0}
+                            min={1}
                             step="1000"
                             required
                             className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -190,9 +194,10 @@ const PaymentPortalPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                        disabled={submitting}
+                        className="w-full py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Confirmar pago (simulado)
+                        {submitting ? 'Procesando...' : 'Confirmar pago (simulado)'}
                     </button>
                 </form>
             </div>

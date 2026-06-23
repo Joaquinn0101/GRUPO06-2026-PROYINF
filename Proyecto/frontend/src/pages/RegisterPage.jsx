@@ -32,7 +32,7 @@ const RegisterPage = () => {
     const [full_name, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('client'); // 🔹 Nuevo estado para el rol
+
     const [showPassword, setShowPassword] = useState(false); // 🔹 Estado para mostrar password
     const [error, setError] = useState('');
 
@@ -60,8 +60,7 @@ const RegisterPage = () => {
                     rut: cleanRut, 
                     full_name, 
                     email, 
-                    password,
-                    role // 🔹 Enviamos el rol
+                    password
                 }),
             });
             
@@ -77,12 +76,7 @@ const RegisterPage = () => {
             // Si todo está OK (201), logueamos y redirigimos
             auth.login(data);
             
-            // 🔹 Redirección condicional según el rol
-            if (data.role === 'executive') {
-                navigate('/admin/dashboard');
-            } else {
-                navigate('/dashboard');
-            }
+            navigate('/dashboard');
 
         } catch (err) {
             // Este catch ahora recibe el "Unexpected end of JSON" O el error de la API
@@ -160,17 +154,7 @@ const RegisterPage = () => {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Tipo de Cuenta</label>
-                        <select 
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="mt-1 w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-white transition-all"
-                        >
-                            <option value="client">Cliente</option>
-                            <option value="executive">Ejecutivo del Banco</option>
-                        </select>
-                    </div>
+
 
                     {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
 

@@ -21,6 +21,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false); // Estado para ver contraseña
+    const [submitting, setSubmitting] = useState(false);
     
     const navigate = useNavigate();
     const auth = useAuth();
@@ -37,6 +38,7 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSubmitting(true);
         // Limpiar puntos y guion antes de enviar al login
         const cleanRut = rut.replace(/[\.\-]/g, '').toUpperCase();
 
@@ -68,6 +70,8 @@ const LoginPage = () => {
             } else {
                 setError(err.message);
             }
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -117,9 +121,10 @@ const LoginPage = () => {
                     
                     <button 
                         type="submit"
-                        className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white focus:ring-offset-2 transition-all shadow-md"
+                        disabled={submitting}
+                        className="w-full py-2.5 px-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white focus:ring-offset-2 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Entrar
+                        {submitting ? 'Ingresando...' : 'Entrar'}
                     </button>
                 </form>
 
