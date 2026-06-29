@@ -18,7 +18,7 @@ class FrenchSystemStrategy extends LoanCalculationStrategy {
         const monthlyRate = (annualRate / 100) / 12;
 
         if (monthlyRate === 0) {
-            return parseFloat((amount / termMonths).toFixed(2));
+            return Number.parseFloat((amount / termMonths).toFixed(2));
         }
 
         // Fórmula del Sistema Francés: C = P * i / (1 - (1 + i)^-n)
@@ -26,7 +26,7 @@ class FrenchSystemStrategy extends LoanCalculationStrategy {
         const denominator = 1 - Math.pow(1 + monthlyRate, -termMonths);
 
         const installment = numerator / denominator;
-        return parseFloat(installment.toFixed(2));
+        return Number.parseFloat(installment.toFixed(2));
     }
 }
 
