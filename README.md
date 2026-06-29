@@ -16,6 +16,7 @@ Este es el repositorio del *Grupo 6*, cuyos integrantes son:
 ### Hito 5: Inspección de Issues, mejoramiento de HU y Pruebas de carga
 A continuación, se presenta el avance dado por los requisitos mencionados para el Hito 5.
 * **Inspections:** [Ver información detallada](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Inspections) , también el screenshot se encuentra en la carpeta '/inspections' y dentro del link.
+* **Re-Inspections:** [Ver Información](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Re-Inspections) , también el screenshot se encuentra en la carpeta '/inspections' y dentro del link.
 
 ### Hito 4: Evaluación de Arquitectura y Revisión de HUs
 A continuación, se presenta la lista de los concerns detallados y declarados como los más impactantes en términos de calidad según el cliente.
