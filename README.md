@@ -1,4 +1,4 @@
-
+<img width="960" height="833" alt="image" src="https://github.com/user-attachments/assets/c197e0b2-3aaf-4a48-95af-a2c5143330c2" />
 # Grupo 6
 Este repositorio contiene el proyecto base del semestre 2025-2 que el grupo continuará trabajando durante el semestre 2026-1.
 
@@ -19,6 +19,15 @@ A continuación, se presenta el avance dado por los requisitos mencionados para 
 * **Re-Inspections:** [Ver Información](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Re-Inspections) , también el screenshot se encuentra en la carpeta '/inspections' y dentro del link.
 * **Re-estimacion HU:** [Ver Información](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Re%E2%80%90Estimaciones)
 * **Pruebas de Carga (JMeter):** [Ver información detallada](https://github.com/Joaquinn0101/GRUPO06-2026-PROYINF/wiki/Pruebas-de-Carga-con-Apache-JMeter) , también el gráfico de resultados se encuentra en la carpeta '/loadtests' y dentro del link.
+
+  | Nombre | Rol | Ocupación | Tiempo utilizado |
+|---|---|---|---|
+| Martín Layseca | 202330556-1 | Re-estimacion HUs | 60 minutos |
+| Bianca León | 202330527-8 | Pruebas de Carga (JMeter) | 90 minutos |
+| Joaquín Torres | 202330550-2 | Inspections y Re-Inspections | 70 minutos |
+| Byron Agurto | 202223544-6 | Correccion de errores encontrados en la Inspection | 60 minutos |
+| Diego Villanueva | 202330558-8 | Re-estimacion HUs | 30 minutos |
+
 
 ### Hito 4: Evaluación de Arquitectura y Revisión de HUs
 A continuación, se presenta la lista de los concerns detallados y declarados como los más impactantes en términos de calidad según el cliente.
